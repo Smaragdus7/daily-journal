@@ -1,5 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const { Router } = require("express");
+var _ = require('lodash');
 const app = express();
 const port = 3000;
 
@@ -37,6 +39,20 @@ app.post('/compose', (req, res) => {
   };
   posts.push(postContent);
   res.redirect("/");
+})
+
+app.get('/posts/:topic', (req, res) => {
+  let name = _.lowerCase(req.params.topic);
+  let obj = posts.find(o => _.lowerCase(o.title) === name);
+  if(obj){
+    res.render("post", {
+      title: obj.title,
+      body: obj.body
+    });
+  }
+  else {
+    console.log("Match not found!");
+  }
 })
 
 app.listen(port, () => {
